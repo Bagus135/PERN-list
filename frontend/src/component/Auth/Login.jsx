@@ -1,17 +1,20 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import axi from "../../adios"
+import { useContext, useState } from "react"
+import { Link, useNavigate} from "react-router-dom"
+import { AuthContext } from "./AuthContex"
+import axi from "../../adios";
 
-function Register(){
-    const navigate = useNavigate();
+function Login(){
+    const navigate = useNavigate(0);
+    const {setIsAuthenticated} = useContext(AuthContext);
     const [Err, setErr] = useState(null)
     const [inputs, setInputs] = useState({
-        name : "",
         email : "",
         password : "",
     }) 
-    const { name, email, password} = inputs
+    const {email, password} = inputs
+
+    // const [error, setErr]= useState(null)
 
     const onChange = (e) =>{
         setInputs({...inputs, [e.target.name] : e.target.value})
@@ -19,13 +22,17 @@ function Register(){
 
     const onSubmit = async (e) =>{
         e.preventDefault();
-        
-        const body = {name, email, password}
+
+        const body = {email, password}
         try {
-              const res = await axi.post('/auth/register', body)
-              const token = res.data.token
-              localStorage.setItem("token", JSON.stringify(token))
-              navigate('/main')
+            const res = await axi.post('/login', body)
+            
+            const token = res.data.token
+            localStorage.setItem("token", JSON.stringify(token));
+            setIsAuthenticated(true)
+            console.log(res)
+            navigate('/main')
+
         } catch (error) {
             setErr(error.message)
         }
@@ -33,18 +40,10 @@ function Register(){
 
     return (
         <div className="container mt-5">
-            <h1 className="text-center my-5">Register</h1>
-            {Err}
-            <hr/>
+            <h1 className="text-center my-5">Login</h1>
             <form onSubmit={(e)=> onSubmit(e)}>
-                <input 
-                type="text"
-                name="name"
-                placeholder="Masukkan nama anda"
-                className="form-control my-3"
-                value={name}
-                onChange={e=> onChange(e)}
-                />
+                {Err}
+                <hr/>
                 <input 
                 type="email"
                 name="email"
@@ -55,7 +54,7 @@ function Register(){
                 />
                 <input 
                 type="password"
-                name="password"
+                name = "password"
                 placeholder="Masukkan password anda"
                 className="form-control my-3"
                 value={password}
@@ -63,9 +62,10 @@ function Register(){
                 />
                 <button className="btn btn-primary btn btn-block" type="submit"> Submit</button>
             </form>
-            <p> Sudah Memiliki Akun? <Link to={"/login"}>Login</Link></p>
+            <p> Belum Memiliki Akun? <Link to={"/register"}>Register</Link></p>
         </div>
     )
 }
 
-export default Register
+
+export default Login

@@ -5,7 +5,6 @@ import Login from './component/Auth/Login';
 import Register from './component/Auth/Register';
 import Main from './component/Main/main';
 import Home from './component/Home/home';
-import Admin from './component/Home/admin';
 
 function AppRoute() {
   const {isAuthenticated} = useContext(AuthContext)
@@ -30,7 +29,6 @@ function App(){
     <nav className='navbar navbar-expand-lg bg-dark'>
       <div className="container">
         <Link to="/" className='btn btn-primary'>Home</Link>
-        <Admin/>
       </div>
     </nav>
     <div className="container mt-5">
